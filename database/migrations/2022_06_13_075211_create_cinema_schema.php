@@ -36,7 +36,49 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+        Schema::create('movies', function($table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('name');
+            $table->string('time');
+            $table->boolean('is_booked')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('showrooms', function($table) {
+            $table->increments('id');
+            $table->string('showroom_name');
+            $table->timestamps();
+        });
+
+        Schema::create('cinemas', function($table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('file_name');
+            $table->string('file_time');
+            $table->integer('showroom_id')->unsigned()->nullable();
+            $table->foreign('showroom_id')->references('id')->on('showrooms')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('seat_types', function($table) {
+            $table->increments('id');
+            $table->string('seat_type');
+            $table->timestamps();
+        });
+
+        Schema::create('seatings', function($table) {
+            $table->increments('id');
+            $table->integer('seat_type_id')->unsigned();
+            $table->foreign('seat_type_id')->references('id')->on('seat_types')->onDelete('cascade');
+            $table->string('ticket_no')->unique();
+            $table->string('seat_no');
+            $table->boolean('is_seat_booked')->default(0);
+            $table->string('prices');
+            $table->timestamps();
+        });
     }
 
     /**
